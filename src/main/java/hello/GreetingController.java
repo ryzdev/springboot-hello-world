@@ -7,21 +7,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 @RestController
 public class GreetingController {
 
-    private static final String TEMPLATE = "Hello, %s!";
-
-    @RequestMapping("/greeting")
-    public HttpEntity<Greeting> greeting(
-            @RequestParam(value = "name", required = false, defaultValue = "World") String name) {
-
-        Greeting greeting = new Greeting(String.format(TEMPLATE, name));
-        greeting.add(linkTo(methodOn(GreetingController.class).greeting(name)).withSelfRel());
-
+    @RequestMapping("/greet")
+    public HttpEntity<Greeting> greet(
+            @RequestParam(value = "name", required = false, defaultValue = "World") String name,
+            @RequestParam(value = "childName", required = false, defaultValue = "childName") String childName) {
+        Greeting greeting = new Greeting(name, childName);
         return new ResponseEntity<Greeting>(greeting, HttpStatus.OK);
+    }
+
+    @RequestMapping("/greet/child")
+    public HttpEntity<Child> childGreet(@RequestParam(value = "name", required = false, defaultValue = "childName") String name) {
+        Child child = new Child(name);
+        return new ResponseEntity<Child>(child, HttpStatus.OK);
     }
 }
